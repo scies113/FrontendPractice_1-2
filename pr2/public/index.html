@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Document</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <h1 class="page__title">Список товаров</h1>
+
+    <div class="form">
+      <form id="product-form">
+        <div class="form__row">
+          <input type="text" id="name" placeholder="Название" required />
+          <input type="number" id="price" placeholder="Стоимость" required />
+          <button type="submit">Добавить</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="products" class="products"></div>
+  </div>
+
+  <script>
+    function renderProducts(list) {
+      var container = document.getElementById("products");
+      container.innerHTML = "";
+
+      list.forEach(function (product) {
+        var item = document.createElement("div");
+        item.className = "product";
+
+        item.innerHTML =
+          "<div class='product__info'>" +
+          "<div class='product__name'>" + product.name + "</div>" +
+          "<div class='product__price'>" + product.price + " ₽</div>" +
+          "</div>" +
+          "<div class='product__actions'>" +
+          "<button class='product__edit'>Редактировать</button>" +
+          "<button class='product__delete'>Удалить</button>" +
+          "</div>";
+
+        var deleteBtn = item.querySelector(".product__delete");
+        deleteBtn.addEventListener("click", function () {
+          fetch("/products/" + product.id, { method: "DELETE" })
+            .then(function () { loadProducts(); });
+        });
+
+        // простой пример редактирования: +1000 к цене
+        var editBtn = item.querySelector(".product__edit");
+        editBtn.addEventListener("click", function () {
+          var newPrice = Number(prompt("Новая цена:", product.price));
+          if (!isNaN(newPrice)) {
+            fetch("/products/" + product.id, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ price: newPrice })
+            }).then(function () { loadProducts(); });
+          }
+        });
+
+        container.appendChild(item);
+      });
+    }
+
+    function loadProducts() {
+      fetch("/products")
+        .then(function (res) { return res.json(); })
+        .then(function (data) { renderProducts(data); })
+        .catch(function (err) {
+          console.log("Ошибка загрузки товаров:", err);
+        });
+    }
+
+    var form = document.getElementById("product-form");
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      var nameInput = document.getElementById("name");
+      var priceInput = document.getElementById("price");
+
+      var body = {
+        name: nameInput.value,
+        price: Number(priceInput.value)
+      };
+
+      fetch("/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      })
+        .then(function (res) { return res.json(); })
+        .then(function () {
+          form.reset();
+          loadProducts();
+        })
+        .catch(function (err) {
+          console.log("Ошибка добавления товара:", err);
+        });
+    });
+
+    loadProducts();
+  </script>
+</body>
+</html>
