@@ -1,0 +1,56 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.product-card {
+  max-width: 350px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 50px auto;
+  overflow: hidden;
+}
+.product-card__image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+.product-card__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333333;
+  margin: 16px;
+  padding: 0 16px;
+}
+.product-card__description {
+  font-size: 14px;
+  color: #666666;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+.product-card__button {
+  width: calc(100% - 32px);
+  margin: 0 16px 16px 16px;
+  padding: 12px 24px;
+  background-color: #007AFF;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.product-card__button:hover {
+  background-color: rgb(0, 97.6, 204);
+  transform: translateY(-2px);
+}
+
+/*# sourceMappingURL=style.css.map */
