@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин (Практика 3)</title>
+    <style>
+        /* Скомпилированный CSS из твоего style.scss */
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f5f5f5; }
+        .page { max-width: 700px; margin: 0 auto; }
+        .page__title { margin-bottom: 16px; }
+        .form { background-color: #ffffff; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); }
+        .form__row { display: flex; gap: 8px; }
+        .form input { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid #ccc; }
+        .form button { padding: 8px 14px; border-radius: 999px; border: none; background-color: #007aff; color: white; font-weight: 600; cursor: pointer; }
+        .form button:hover { opacity: 0.9; }
+        .products { display: flex; flex-direction: column; gap: 8px; }
+        .product { background-color: #ffffff; padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); }
+        .product__info { display: flex; flex-direction: column; }
+        .product__name { font-weight: bold; }
+        .product__price { color: #666; font-size: 14px; }
+        .product__actions { display: flex; gap: 6px; }
+        .product__actions button { padding: 8px 14px; border-radius: 999px; border: none; background-color: #ff4d4f; color: white; font-weight: 600; cursor: pointer; }
+        .product__actions button--edit { background-color: #6c757d; }
+        
+        /* Стили для блока внешнего API */
+        .external-api { margin-top: 30px; background: #fff; padding: 20px; border-radius: 8px; border-left: 5px solid #2ecc71; }
+        .external-api h2 { margin-top: 0; }
+        .api-result { background: #f8f9fa; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; white-space: pre-wrap; border: 1px solid #eee; }
+        .btn-weather { background-color: #2ecc71 !important; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <h1 class="page__title">Список товаров</h1>
+
+    <!-- Форма добавления/редактирования -->
+    <div class="form">
+        <input type="hidden" id="prodId">
+        <div class="form__row">
+            <input type="text" id="prodName" placeholder="Название товара" required>
+            <input type="number" id="prodPrice" placeholder="Цена" required>
+            <button onclick="saveProduct()" id="saveBtn">Добавить</button>
+            <button onclick="resetForm()" style="background-color: #95a5a6;">Отмена</button>
+        </div>
+    </div>
+
+    <!-- Список товаров -->
+    <div class="products" id="productsList">
+        <!-- Товары будут загружены сюда через JS -->
+    </div>
+
+    <!-- Блок для задания 2 (Внешний API) -->
+    <div class="external-api">
+        <h2>Тест внешнего API (Погода)</h2>
+        <p>Запрос к Open-Meteo (Москва):</p>
+        <button class="btn-weather" onclick="loadWeather()">Получить погоду</button>
+        <div id="weatherOutput" class="api-result">Нажмите кнопку для загрузки данных...</div>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:3000/products';
+
+    // Загрузка товаров при старте страницы
+    document.addEventListener('DOMContentLoaded', loadProducts);
+
+    // 1. READ ALL - Получить все товары
+    async function loadProducts() {
+        try {
+            const response = await fetch(API_URL);
+            const products = await response.json();
+            renderProducts(products);
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Не удалось загрузить товары. Убедитесь, что сервер запущен!');
+        }
+    }
+
+    // Отрисовка списка
+    function renderProducts(products) {
+        const list = document.getElementById('productsList');
+        list.innerHTML = '';
+        
+        products.forEach(p => {
+            const item = document.createElement('div');
+            item.className = 'product';
+            item.innerHTML = `
+                <div class="product__info">
+                    <span class="product__name">${p.name}</span>
+                    <span class="product__price">${p.price} ₽</span>
+                </div>
+                <div class="product__actions">
+                    <button class="product__actions button--edit" onclick="editProduct(${p.id}, '${p.name}', ${p.price})">Ред.</button>
+                    <button onclick="deleteProduct(${p.id})">Удалить</button>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    // 2. CREATE / UPDATE - Сохранить товар
+    async function saveProduct() {
+        const id = document.getElementById('prodId').value;
+        const name = document.getElementById('prodName').value;
+        const price = parseFloat(document.getElementById('prodPrice').value);
+
+        if (!name || isNaN(price)) {
+            alert('Заполните название и цену корректно');
+            return;
+        }
+
+        const url = id ? `${API_URL}/${id}` : API_URL;
+        const method = id ? 'PATCH' : 'POST';
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, price })
+            });
+
+            if (response.ok) {
+                resetForm();
+                loadProducts();
+            } else {
+                const err = await response.json();
+                alert(err.error || 'Ошибка сохранения');
+            }
+        } catch (error) {
+            alert('Ошибка соединения с сервером');
+        }
+    }
+
+    // Подготовка к редактированию
+    function editProduct(id, name, price) {
+        document.getElementById('prodId').value = id;
+        document.getElementById('prodName').value = name;
+        document.getElementById('prodPrice').value = price;
+        document.getElementById('saveBtn').innerText = 'Сохранить';
+        document.getElementById('saveBtn').style.backgroundColor = '#f39c12';
+    }
+
+    // 3. DELETE - Удалить товар
+    async function deleteProduct(id) {
+        if (!confirm('Вы уверены, что хотите удалить этот товар?')) return;
+
+        try {
+            const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            if (response.ok) {
+                loadProducts();
+            } else {
+                alert('Ошибка удаления');
+            }
+        } catch (error) {
+            alert('Ошибка соединения');
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('prodId').value = '';
+        document.getElementById('prodName').value = '';
+        document.getElementById('prodPrice').value = '';
+        document.getElementById('saveBtn').innerText = 'Добавить';
+        document.getElementById('saveBtn').style.backgroundColor = '';
+    }
+
+    // 4. ВНЕШНИЙ API (Задание 2 Практики 3)
+    async function loadWeather() {
+        const output = document.getElementById('weatherOutput');
+        output.innerText = 'Загрузка...';
+        
+        try {
+            // Используем открытый API Open-Meteo (не требует ключа)
+            const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.61&current_weather=true');
+            const data = await response.json();
+            output.innerText = JSON.stringify(data, null, 2);
+        } catch (error) {
+            output.innerText = 'Ошибка: ' + error.message;
+        }
+    }
+</script>
+
+</body>
+</html>
