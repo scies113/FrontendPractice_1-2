@@ -1,34 +1,32 @@
 const express = require("express");
 const path = require("path");
-const cors = require("cors"); // <--- ДОБАВЛЕНО: импорт cors
+const cors = require("cors"); 
 const app = express();
 const port = 3000;
 
-// <--- ДОБАВЛЕНО: использование cors
+
 app.use(cors()); 
 
 app.use(express.json());
-// Если будешь класть index.html в папку public внутри backend, раскомментируй строку ниже:
 app.use(express.static(path.join(__dirname, "..", "front"))); 
 
 app.get("/", function (req, res) {
-  // Если фронтенд лежит отдельно, этот маршрут можно оставить для проверки сервера
     res.sendFile(path.join(__dirname, "..", "front", "index.html"));
 });
 
-// Данные в памяти по умолч.
+
 let products = [
   { id: 1, name: "iPhone 17", price: 90000 },
   { id: 2, name: "MacBook Air", price: 170000 },
   { id: 3, name: "AirPods Pro", price: 20000 },
 ];
 
-// Вернуть все товары
+//вернуть все товары
 app.get("/products", function (req, res) {
   res.json(products);
 });
 
-// Вернуть товар по id
+//вернуть товар по id
 app.get("/products/:id", function (req, res) {
   var id = parseInt(req.params.id);
   var product = products.find(function (p) {
@@ -40,7 +38,7 @@ app.get("/products/:id", function (req, res) {
   res.json(product);
 });
 
-// Добавить товар
+//добавить товар
 app.post("/products", function (req, res) {
   var name = req.body.name;
   var price = req.body.price;
@@ -61,7 +59,7 @@ app.post("/products", function (req, res) {
   res.status(201).json(newProduct);
 });
 
-// Редактировать товар (PATCH)
+//PATCH
 app.patch("/products/:id", function (req, res) {
   var id = parseInt(req.params.id);
   var product = products.find(function (p) {
@@ -87,7 +85,7 @@ app.patch("/products/:id", function (req, res) {
   res.json(product);
 });
 
-// Удалить товар
+//удалить товар
 app.delete("/products/:id", function (req, res) {
   var id = parseInt(req.params.id);
   var before = products.length;
