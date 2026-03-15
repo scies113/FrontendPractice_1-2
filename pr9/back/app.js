@@ -10,11 +10,11 @@ const app = express();
 const port = 3000;
 const SALT_ROUNDS = 10;
 
-// --- КОНФИГУРАЦИЯ ТОКЕНОВ ---
+//КОНФИГУРАЦИЯ ТОКЕНОВ
 const ACCESS_SECRET = "access_secret_key_pr9";
-const REFRESH_SECRET = "refresh_secret_key_pr9"; // Отдельный секрет для refresh
+const REFRESH_SECRET = "refresh_secret_key_pr9"; //отдельный секрет для refresh
 
-// ВРЕМЯ ЖИЗНИ ТОКЕНОВ: Access - короткий (для теста 60 секунд), Refresh - длинный (для теста 150 секунд)
+// ВРЕМЯ ЖИЗНИ ТОКЕНОВ!!!: Access - короткий (для теста 60 секунд), Refresh - длинный (для теста 150 секунд)
 const ACCESS_EXPIRES_IN = "1m"; 
 const REFRESH_EXPIRES_IN = "2.5m";
 
