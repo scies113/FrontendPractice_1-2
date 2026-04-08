@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заметки (13-18)</title>
+
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- мета-теги для мобильных платформ -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#4285f4">
+  <link rel="apple-touch-icon" href="/icons/favicon-152x152.png">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <!-- App Shell(статический каркас) -->
+  <header class="app-shell-header">
+    <div class="header-top">
+      <h1>Заметки — App Shell</h1>
+      <div class="status" id="status">
+        <span class="status__dot"></span>
+        <span class="status__text">Онлайн</span>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button id="home-btn" class="tab active">Главная</button>
+      <button id="about-btn" class="tab">О приложении</button>
+    </nav>
+  </header>
+
+  <!-- App Shell(контейнер для динамического контента) -->
+  <main id="app-content" class="app-content"></main>
+
+  <footer class="app-footer">
+    <p>Практика №15 — HTTPS + App Shell</p>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('SW registered:', reg.scope))
+          .catch(err => console.error('SW registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>

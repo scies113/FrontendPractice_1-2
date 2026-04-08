@@ -1,0 +1,26 @@
+<div class="about-content">
+  <h2 class="section-title">О приложении</h2>
+  <div class="about-card">
+    <p class="version">Версия 1.0.0</p>
+    <p>Это приложение для заметок, построенное на архитектуре <strong>App Shell</strong>.</p>
+    <p>Каркас приложения (HTML, CSS, JS) кэшируется при первом посещении и загружается мгновенно.</p>
+    <p>Динамический контент (страницы «Главная» и «О приложении») подгружается внутрь контейнера.</p>
+
+    <h3>Технологии</h3>
+    <ul class="tech-list">
+      <li>HTML5 + CSS3 (SCSS)</li>
+      <li>JavaScript (ES6+)</li>
+      <li>Service Worker API</li>
+      <li>Cache API (два кэша: статика + динамический контент)</li>
+      <li>LocalStorage API</li>
+      <li>HTTPS (самоподписанный сертификат mkcert)</li>
+      <li>PWA (Progressive Web App)</li>
+    </ul>
+
+    <h3>Стратегии кэширования</h3>
+    <ul class="tech-list">
+      <li><strong>Cache First</strong> — для статических ресурсов (CSS, JS, иконки)</li>
+      <li><strong>Network First</strong> — для динамических страниц (/content/*.html)</li>
+    </ul>
+  </div>
+</div>

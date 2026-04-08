@@ -1,0 +1,61 @@
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const webpush = require('web-push');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const path = require('path');
+
+// VAPID ключи (сгенерированы для практики)
+const vapidKeys = {
+  publicKey: 'BLhxkSLa215lTBmUUvx_TtTmeQh02GQ2LjiJkfhLyYliMp0MtPTxi8Mc7v9PFZJJCSEJr2E68TVRUMNurPCMZDM',
+  privateKey: '4t3Y5ZVFKIGGtZjt2Ra5A1vFj3BoKCmWV7GFAVVYe9I'
+};
+
+webpush.setVapidDetails('mailto:student@example.com', vapidKeys.publicKey, vapidKeys.privateKey);
+
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+let subscriptions = [];
+
+const server = http.createServer(app);
+const io = socketIo(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
+
+io.on('connection', (socket) => {
+  console.log('Клиент подключён:', socket.id);
+
+  socket.on('newTask', (task) => {
+    console.log('Новая задача:', task.text);
+    //рассылаем всем клиентам
+    socket.broadcast.emit('taskAdded', task);
+
+    //отправляем push-уведомление всем подписчикам
+    const payload = JSON.stringify({ title: 'Новая задача', body: task.text });
+    subscriptions.forEach(sub => {
+      webpush.sendNotification(sub, payload).catch(err => console.error('Push error:', err));
+    });
+  });
+
+  socket.on('disconnect', () => console.log('Клиент отключён:', socket.id));
+});
+
+//подписка на push-уведомления
+app.post('/subscribe', (req, res) => {
+  subscriptions.push(req.body);
+  console.log('Подписка сохранена. Всего:', subscriptions.length);
+  res.status(201).json({ message: 'Подписка сохранена' });
+});
+
+//отписка от push-уведомлений
+app.post('/unsubscribe', (req, res) => {
+  const { endpoint } = req.body;
+  subscriptions = subscriptions.filter(sub => sub.endpoint !== endpoint);
+  console.log('Подписка удалена. Осталось:', subscriptions.length);
+  res.status(200).json({ message: 'Подписка удалена' });
+});
+
+const PORT = 3001;
+server.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));

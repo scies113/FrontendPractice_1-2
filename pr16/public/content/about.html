@@ -1,0 +1,35 @@
+<div class="about-content">
+  <h2 class="section-title">О приложении</h2>
+  <div class="about-card">
+    <p class="version">Версия 1.0.0</p>
+    <p>Приложение для заметок с поддержкой <strong>WebSocket</strong> и <strong>Push-уведомлений</strong>.</p>
+    <p>WebSocket обеспечивает мгновенные уведомления в реальном времени между вкладками браузера.</p>
+    <p>Push-уведомления работают даже при закрытой вкладке (через Service Worker).</p>
+
+    <h3>Технологии</h3>
+    <ul class="tech-list">
+      <li>HTML5 + CSS3 (SCSS)</li>
+      <li>JavaScript (ES6+)</li>
+      <li>Socket.io (WebSocket)</li>
+      <li>Web Push API (VAPID)</li>
+      <li>Service Worker API</li>
+      <li>Node.js + Express (бэкенд)</li>
+      <li>LocalStorage API</li>
+    </ul>
+
+    <h3>Как это работает</h3>
+    <ul class="tech-list">
+      <li><strong>WebSocket</strong> — двустороннее соединение, сервер отправляет события клиентам мгновенно</li>
+      <li><strong>Push</strong> — сервер отправляет push-уведомление через Web Push API</li>
+      <li><strong>Service Worker</strong> — обрабатывает push-события и показывает системные уведомления</li>
+    </ul>
+
+    <h3>Как протестировать</h3>
+    <ul class="tech-list">
+      <li>Откройте две вкладки с приложением</li>
+      <li>В одной вкладке добавьте заметку</li>
+      <li>Во второй появится всплывающее уведомление (WebSocket)</li>
+      <li>Если включены Push — придёт системное уведомление</li>
+    </ul>
+  </div>
+</div>

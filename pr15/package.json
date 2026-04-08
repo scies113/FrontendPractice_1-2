@@ -1,0 +1,16 @@
+{
+  "name": "pr15-notes-appshell",
+  "version": "1.0.0",
+  "scripts": {
+    "sass": "sass src/scss/styles.scss public/css/styles.css --style compressed",
+    "dev": "npm run sass && npx live-server public --port=8080",
+    "dev:https": "npm run sass && npx http-server public -S -C localhost.pem -K localhost-key.pem -p 3000",
+    "build": "npm run sass",
+    "cert:gen": "mkcert localhost 127.0.0.1 ::1"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "live-server": "^1.2.2",
+    "sass": "^1.69.0"
+  }
+}

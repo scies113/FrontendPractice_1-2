@@ -1,0 +1,36 @@
+<div class="about-content">
+  <h2 class="section-title">О приложении</h2>
+  <div class="about-card">
+    <p class="version">Версия 1.0.0</p>
+    <p>Приложение для заметок с поддержкой <strong>напоминаний</strong> и <strong>детализированных Push-уведомлений</strong>.</p>
+    <p>Можно создать заметку с напоминанием на определённую дату и время. Сервер запланирует push-уведомление.</p>
+    <p>В уведомлении есть кнопка <strong>«Отложить на 5 минут»</strong> — snooze.</p>
+
+    <h3>Технологии</h3>
+    <ul class="tech-list">
+      <li>HTML5 + CSS3 (SCSS)</li>
+      <li>Vanilla JavaScript (ES6+)</li>
+      <li>Socket.io (WebSocket)</li>
+      <li>Web Push API (VAPID)</li>
+      <li>Service Worker API (push + notification actions)</li>
+      <li>Node.js + Express (бэкенд с планировщиком)</li>
+      <li>LocalStorage API</li>
+    </ul>
+
+    <h3>Как это работает</h3>
+    <ul class="tech-list">
+      <li><strong>Форма напоминаний</strong> — текст + дата/время, отправляется на сервер</li>
+      <li><strong>Планировщик</strong> — сервер использует setTimeout для отложенной отправки push</li>
+      <li><strong>Push с кнопками</strong> — уведомление содержит action «Отложить на 5 минут»</li>
+      <li><strong>Snooze</strong> — клик по кнопке отправляет POST /snooze, сервер переносит напоминание</li>
+    </ul>
+
+    <h3>Как протестировать</h3>
+    <ul class="tech-list">
+      <li>Включите push-уведомления кнопкой в футере</li>
+      <li>Создайте заметку с напоминанием на 1–2 минуты вперёд</li>
+      <li>Дождитесь push-уведомления</li>
+      <li>Нажмите «Отложить на 5 минут» — напоминание придёт снова</li>
+    </ul>
+  </div>
+</div>

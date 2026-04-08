@@ -1,0 +1,9 @@
+{
+  "name": "pr13-notes",
+  "version": "1.0.0",
+  "scripts": {
+    "sass": "sass src/scss/styles.scss public/css/styles.css --style compressed",
+    "dev": "npm run sass && npx live-server public --port=8080",
+    "build": "npm run sass"
+  }
+}
