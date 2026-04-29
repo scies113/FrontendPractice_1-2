@@ -1,0 +1,33 @@
+@baseUrl = http://localhost:3000/api
+
+### 1. Создание пользователя
+# @name createUser
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "first_name": "Алексей",
+  "last_name": "Петров",
+  "age": 21
+}
+
+###
+
+@userId = {{createUser.response.body.id}}
+
+### 2. Получение всех пользователей
+GET {{baseUrl}}/users
+
+### 3. Получение конкретного пользователя
+GET {{baseUrl}}/users/{{userId}}
+
+### 4. Обновление пользователя
+PATCH {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+
+{
+  "age": 22
+}
+
+### 5. Удаление пользователя
+DELETE {{baseUrl}}/users/{{userId}}
